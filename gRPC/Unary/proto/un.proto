@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+service Unary{
+    rpc hello(HelloRequest) returns (HelloResponse);
+} 
+
+message HelloRequest {
+    string msg = 1;
+}
+
+message HelloResponse {
+    string msg = 2;
+}
