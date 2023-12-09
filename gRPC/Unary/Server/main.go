@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
+	"os"
+
+	"io/ioutil"
 
 	"google.golang.org/grpc"
 
@@ -12,26 +16,43 @@ import (
 
 // define the port
 const (
-	ip_adress = "10.10.12.194"
-	port = ":8080"
+	ip_adress = "10.10.12.226"
+	port      = ":8080"
 )
 
 type helloServer struct {
 	pb.UnaryServer
 }
 
+func readFromFile(filename string) (string, error) {
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
+}
+
 func (s *helloServer) Hello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloResponse, error) {
-	result := "Hello " + req.Msg
-	// printf("Hello " + req.Msg)
-	// print this req.Msg to console
-	log.Printf("Hello " + req.Msg)
-	return &pb.HelloResponse{Msg: result}, nil
+
+	filename := "data.txt"
+
+	// Read the content of the file into a string
+	content, err := os.ReadFile(filename)
+
+	if err != nil {
+		fmt.Printf("Error reading from file: %v\n", err)
+	}
+	//result := "Hello " + req.Msg
+	fmt.Printf("Request")
+
+	// log.Printf("Hello " + req.Msg)
+	return &pb.HelloResponse{Msg: string(content)}, nil
 }
 
 func main() {
 
 	//listen on the port
-	address := ip_adress+port
+	address := ip_adress + port
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("Failed to start server %v", err)
