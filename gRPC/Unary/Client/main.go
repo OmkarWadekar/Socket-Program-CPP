@@ -17,7 +17,7 @@ import (
 
 // define the port
 const (
-	ip_adress = "10.10.12.194"
+	ip_adress = "10.10.12.226"
 	port = ":8080"
 )
 
@@ -27,10 +27,8 @@ func main() {
 	// 	log.Fatalf("Did not connect: %v", err)
 	// }
 	// defer conn.Close()
-
 	// //object of the client
 	// client := pb.NewUnaryClient(conn)
-
 
 	// // Get the current time
 	// currentTime := time.Now()
@@ -52,13 +50,7 @@ func main() {
 	// 	return
 	// }
 	// fmt.Println("Formatted time written to", logFilePath)
-
-
-
 	// response, err := client.Hello(context.Background(), &pb.HelloRequest{Msg: "Rohan"})
-
-
-
 	// if err != nil {
 	// 	log.Fatalf("Error %v", err)
 	// }
@@ -86,12 +78,22 @@ func main() {
 
 	// Create or open the log file
 	logFilePath := "logfile.txt"
+	responseFilePath := "response.txt"
+
 	file, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file2,err2 := os.OpenFile(responseFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println("Error opening or creating log file:", err)
 		return
 	}
+	if err2 != nil {
+		fmt.Println("Error opening or creating response file:", err2)
+		return
+	}
+
+
 	defer file.Close()
+	defer file2.Close()
 	// Write the formatted time to the log file
 	if _, err := file.WriteString(formattedBeforeTime + " (before sending)\n"); err != nil {
 		fmt.Println("Error writing to log file:", err)
@@ -104,7 +106,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error %v", err)
 	}
-	log.Printf("%s", response.Msg)
+	// log.Printf("%s", response.Msg)
+	log.Printf("Hello msg recieved ")
+	//print size of response
+	// log.Printf("%s", response.sizeof(Msg))
 
 	// Get the current time after calling the 'Hello' method
 	afterTime := time.Now()
@@ -118,5 +123,16 @@ func main() {
 		fmt.Println("Error writing to log file:", err)
 		return
 	}
-	fmt.Println("Formatted time (after receiving) written to", logFilePath)
+
+	
+	fmt.Println("Formatted time (after receiving) written to", responseFilePath)
+
+		// if _, err := file.WriteString(formattedBeforeTime + " (before sending)\n"); err != nil {
+		// fmt.Println("Error writing to log file:", err)
+		// return
+		if _, err2 := file2.WriteString(response.Msg + " (response)\n"); err2 != nil {
+		fmt.Println("Error writing to response file:", err2)
+		return
+
+	}
 }
